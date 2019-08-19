@@ -1,7 +1,7 @@
 # Android Forms Made Easy
 > **NOTE:** this library only works with [AndroidX](https://developer.android.com/jetpack/androidx/migrate):
 
-![](https://gist.github.com/juan1402/83140da747997d2553d8c390b7c72dc3#file-form-sample-gif)
+![](https://gist.github.com/juan1402/83140da747997d2553d8c390b7c72dc3#file-form-sample-gif.gif)
 
 ```` groovy
 implementation 'com.hurtado.forms:AndroidForms:0.1.0'
