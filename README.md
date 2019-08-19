@@ -1,12 +1,6 @@
 ## Android Forms Made Easy
 > Warining, this library only works with **Androidx** 
 
-
-
-
-
-## Validations on your EditText in just a few lines of code
-
 Include this dependency to your build.gradle file
 
 ```` groovy
