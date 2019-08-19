@@ -176,4 +176,4 @@ Now just add it to your array of validations same as the preloaded ones of cours
 **And thats it, now you have your custom validation !!**
 Please check our fully functional example on this repo
 
-# Happy Coding  :)
+# Happy Coding  :beers:
