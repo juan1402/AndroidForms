@@ -107,7 +107,7 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 
 # Bind it all together
 Now just add the property ```` app:validations="@array/sample_field_requirements" ```` 
-to your **FormField** and **thas it !!**
+to your **FormField** and **tha's it !!**
 
 As a bonus you can add a **Button** inside your **FormGroup** and it will be **enable / disable**
 Automatically depending on the form status **form valid / form invalid**
@@ -199,7 +199,7 @@ Now just add it to your array of validations same as the preloaded ones of cours
 </resources>
 ````
 
-**And thats it, now you have your custom validation !!**
+**And that's it, now you have your custom validation !!**
 Please check our fully functional example on this repo
 
 # Happy Coding  :beers:
