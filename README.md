@@ -7,7 +7,7 @@
 
 ## Validations on your EditText in just a few lines of code
 
-add this dependency to your build.gradle file
+Include this dependency to your build.gradle file
 
 ```` groovy
 implementation 'com.hurtado.forms:AndroidForms:0.1.0'
@@ -143,9 +143,13 @@ Automatically depending on the form status **form valid / form invalid**
 # Pre-built Validations
 
 ```` com.hurtado.forms.validations.MaxCharValidation````
+
 ```` com.hurtado.forms.validations.MinCharValidation````
+
 ```` com.hurtado.forms.validations.EmailValidation````
+
 ```` com.hurtado.forms.validations.SymbolsValidation````
+
 ```` com.hurtado.forms.validations.RequiredValidation````
 
 # Creating custom validations
