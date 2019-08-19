@@ -3,6 +3,12 @@
 
 Add validations to your Text Input EditText in just a few lines of code
 
+add this dependency to your build.gradle file
+
+```` groovy
+implementation 'com.hurtado.forms:AndroidForms:0.1.0'
+````
+
 # Form Group 
 
 First add your **FromGroup** to your **XML file** this will be your containter
@@ -77,6 +83,7 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 </resources>
 
 ````
+
 **Do not repeat the same validation twice or it will throw an exception :bug:**
 
 # Bind it all together
@@ -129,8 +136,16 @@ Automatically depending on the form status **form valid / form invalid**
 </com.hurtado.forms.widget.FormGroup>
 ````
 
+# Pre-built Validations
+
+```` com.hurtado.forms.validations.MaxCharValidation````
+```` com.hurtado.forms.validations.MinCharValidation````
+```` com.hurtado.forms.validations.EmailValidation````
+```` com.hurtado.forms.validations.SymbolsValidation````
+```` com.hurtado.forms.validations.RequiredValidation````
+
 # Creating custom validations
-It's great to have some preloaded validations on our forms, but what if we would like
+It's great to have some prebuilt validations on our forms, but what if we would like
 Something custom ?
 
 **Just extend Validation class and its all done!!**
