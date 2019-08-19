@@ -93,9 +93,8 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 ```` com.hurtado.forms.validations.RequiredValidation````
 
 
-**Do not repeat the same validation twice !!**
-
-**It will throw an exception :bug:**
+> **Note:** Do not repeat the same validation twice 
+> **Note:** It will throw an exception 
 
 # Bind it all together
 Now just add the property ```` app:validations="@array/sample_field_requirements" ```` 
