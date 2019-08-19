@@ -102,6 +102,7 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 
 
 **Do not repeat the same validation twice**
+
 **It will throw an exception :bug:**
 
 # Bind it all together
