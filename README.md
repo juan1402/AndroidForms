@@ -1,7 +1,9 @@
 ## Android Forms Made Easy
 **Warining, this library only works with androidx !!!** :boom:
 
-Add validations to your Text Input EditText in just a few lines of code
+
+##Validations on your EditText in just a few lines of code
+
 
 add this dependency to your build.gradle file
 
