@@ -1,5 +1,5 @@
 ## Android Forms Made Easy
-**Warining, this library only works with androidx !!!** :boom:
+> Warining, this library only works with **Androidx** 
 
 
 
