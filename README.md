@@ -101,7 +101,7 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 ```` com.hurtado.forms.validations.RequiredValidation````
 
 
-**Do not repeat the same validation twice**
+**Do not repeat the same validation twice !!**
 
 **It will throw an exception :bug:**
 
