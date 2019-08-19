@@ -88,6 +88,19 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 
 ````
 
+# Pre-built Validations
+
+```` com.hurtado.forms.validations.MaxCharValidation````
+
+```` com.hurtado.forms.validations.MinCharValidation````
+
+```` com.hurtado.forms.validations.EmailValidation````
+
+```` com.hurtado.forms.validations.SymbolsValidation````
+
+```` com.hurtado.forms.validations.RequiredValidation````
+
+
 **Do not repeat the same validation twice or it will throw an exception :bug:**
 
 # Bind it all together
@@ -139,18 +152,6 @@ Automatically depending on the form status **form valid / form invalid**
 
 </com.hurtado.forms.widget.FormGroup>
 ````
-
-# Pre-built Validations
-
-```` com.hurtado.forms.validations.MaxCharValidation````
-
-```` com.hurtado.forms.validations.MinCharValidation````
-
-```` com.hurtado.forms.validations.EmailValidation````
-
-```` com.hurtado.forms.validations.SymbolsValidation````
-
-```` com.hurtado.forms.validations.RequiredValidation````
 
 # Creating custom validations
 It's great to have some prebuilt validations on our forms, but what if we would like
