@@ -77,7 +77,7 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 </resources>
 
 ````
-**Do not repeat the same validation twice or it will throw an exception!!**
+**Do not repeat the same validation twice or it will throw an exception :bug:**
 
 # Bind it all together
 Now just add the property ```` app:validations="@array/sample_field_requirements" ```` 
