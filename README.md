@@ -1,10 +1,6 @@
 ## Android Forms Made Easy
 > **NOTE:** this library only works with [AndroidX](https://developer.android.com/jetpack/androidx/migrate):
 
-
-
-Include this dependency to your build.gradle file
-
 ```` groovy
 implementation 'com.hurtado.forms:AndroidForms:0.1.0'
 ````
