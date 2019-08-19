@@ -81,6 +81,7 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 ````
 
 # Pre-built Validations
+> **Note:** Do not repeat the same validation twice, it will throw an exception 
 
 ```` com.hurtado.forms.validations.MaxCharValidation````
 
@@ -92,8 +93,6 @@ decalre it on your **strings.xml** file, you can add as many as you want.
 
 ```` com.hurtado.forms.validations.RequiredValidation````
 
-
-> **Note:** Do not repeat the same validation twice, it will throw an exception 
 
 # Bind it all together
 Now just add the property ```` app:validations="@array/sample_field_requirements" ```` 
