@@ -25,6 +25,12 @@ import kotlin.reflect.KMutableProperty
 open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
 
+    /**
+     * Use this public variable to request form
+     * Validity at any moment
+     */
+    var isFormValid = false
+
     interface CompleteListener<T : FormResult> {
         fun onFormComplete(result: T)
     }
@@ -37,6 +43,7 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
         mapUserInput(control)
         if (::submitButton.isInitialized)
             submitButton.isEnabled = isValid
+        isFormValid = isValid
 
         isValid
     }
@@ -48,6 +55,11 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
     private lateinit var submitButton: Button
     private lateinit var result: T
 
+    /**
+     * Matches user input with a field
+     * package.name:id/resource-id , resource id will be extracted
+     * And matched against text input edit text inside your form field
+     */
     private fun mapUserInput(control: ValidationControl) = properties.forEach { field ->
         val controlId = resourceId(control.getView())?.split(":id/")?.get(1)
         if (Pattern.compile(controlId).matcher(field.name).find()) {
