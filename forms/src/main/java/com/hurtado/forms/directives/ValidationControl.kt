@@ -1,18 +1,14 @@
 package com.hurtado.forms.directives
 
+import android.view.View
 import com.google.android.material.textfield.TextInputLayout
 
 /**
  * Created by Juan Hurtado on 05-23-18
  * Abstract control over custom error enabled objects
  */
-internal interface ValidationControl {
+interface ValidationControl {
 
-    /**
-     * set's a callback forms errors
-     */
-    fun setCallback(callback: (layout: TextInputLayout?,
-                               errors: String?) -> Unit)
     /**
      * Within this function we will determine if our validation
      * expectations are fulfilled, you can create your custom validations
@@ -35,21 +31,18 @@ internal interface ValidationControl {
 
     /**
      * @see com.hurtado.forms.control.FieldAction
-     * Gets it's layout idOverride this method to
-     * retrieve it's id
+     * @return edit text view id exists
      */
-    fun getLayoutId(): Int
+    fun getView(): View?
 
     /**
-     * @see com.hurtado.forms.control.FieldAction
-     * enable / disable validations
+     * @return edit text input
      */
-    fun setIsEnable(enabled: Boolean)
+    fun input(): String
 
     /**
-     * @see com.hurtado.forms.control.FieldAction
-     * checks if validation is enabled
+     * Clear all listeners and saved instances
      */
-    fun isEnabled(): Boolean
+    fun clear()
 
 }

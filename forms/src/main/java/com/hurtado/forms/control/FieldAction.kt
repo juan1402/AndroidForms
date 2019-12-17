@@ -16,54 +16,47 @@ import com.hurtado.forms.directives.ValidationControl
  * Directives defined on the concrete validations some built in validators (common ones) are provided
  *
  */
-class FieldAction(
-    private val layout: TextInputLayout?,
+open class FieldAction(
+    private var layout: TextInputLayout?,
     private val validators: ArrayList<Validation>,
-    private val validationCallback: (Boolean) -> Boolean
+    private var validationCallback: (Boolean, ValidationControl) -> Boolean
 ) : ValidationControl {
 
-    private lateinit var errorCallback: (layout: TextInputLayout?,
-                                         errors: String?) -> Unit
-
-    private val focusListener = View.OnFocusChangeListener { _, _ ->
-        isValid()
-    }
-
-    private val textWatcher = object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {}
-
-        override fun beforeTextChanged(
-            s: CharSequence?, start: Int,
-            count: Int, after: Int
-        ) {
-        }
-
-        override fun onTextChanged(
-            s: CharSequence?, start: Int,
-            before: Int, count: Int
-        ) {
-            isValid()
-        }
-    }
-
-    private var isEnable = true
-
     init {
-        layout?.editText?.onFocusChangeListener = focusListener
-        layout?.editText?.addTextChangedListener(textWatcher)
+        layout?.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> isValid() }
+        layout?.editText?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(
+                s: CharSequence?, start: Int,
+                count: Int, after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?, start: Int,
+                before: Int, count: Int
+            ) {
+                isValid()
+            }
+        }
+        )
     }
+
+    private lateinit var errorCallback: (
+        layout: TextInputLayout?,
+        errors: String?
+    ) -> Unit
 
     override fun onCreateFormError(value: String): String {
         val error = String()
 
-        if (isEnable) {
-            validators.forEach { validators ->
-                validators.onValidate(
-                    layout?.context,
-                    value
-                )?.let { error ->
-                    return error
-                }
+        validators.forEach { validators ->
+            validators.onValidate(
+                layout?.context,
+                value
+            )?.let { error ->
+                return error
             }
         }
 
@@ -87,27 +80,18 @@ class FieldAction(
             layout?.error = null
         }
 
-        return validationCallback.invoke(isFormValid)
+        return validationCallback.invoke(isFormValid, this)
     }
-
-    override fun setCallback(
-        callback: (
-            layout: TextInputLayout?,
-            errors: String?
-        ) -> Unit
-    ) {
-        errorCallback = callback
-    }
-
-    override fun getLayoutId() = layout?.editText?.id ?: -1
 
     override fun getId() = layout?.editText?.id ?: -1
 
-    override fun setIsEnable(enabled: Boolean) {
-        layout?.error = null
-        isEnable = enabled
-    }
+    override fun getView() = layout?.editText
 
-    override fun isEnabled() = isEnable
+    override fun input() = layout?.editText?.text.toString()
+
+    override fun clear() {
+        validators.clear()
+        layout = null
+    }
 
 }

@@ -9,13 +9,16 @@ import com.hurtado.forms.R
 import com.hurtado.forms.control.Validation
 import java.util.*
 
-class FormField(context: Context, attrs: AttributeSet?) : TextInputLayout(context, attrs) {
+open class FormField(context: Context, attrs: AttributeSet?) : TextInputLayout(context, attrs) {
 
     val validation = ArrayList<Validation>()
 
     init {
-        initStyledAttributes(context.obtainStyledAttributes(
-                attrs, R.styleable.FormField, 0, 0))
+        initStyledAttributes(
+            context.obtainStyledAttributes(
+                attrs, R.styleable.FormField, 0, 0
+            )
+        )
     }
 
     private fun initStyledAttributes(typeArray: TypedArray) {
@@ -30,13 +33,18 @@ class FormField(context: Context, attrs: AttributeSet?) : TextInputLayout(contex
         typeArray.recycle()
     }
 
-    private fun isClassPresent(candidate: String) = Class.forName(
-        candidate, true, this.javaClass.classLoader).newInstance()
-
-
     private fun buildRequirement(requirementClass: String) {
-        val requirement = isClassPresent(requirementClass)
-        if (requirement is Validation) validation.add(requirement)
+        try {
+            val requirement = Class.forName(
+                requirementClass, true, this.javaClass.classLoader
+            ).newInstance()
+            if (requirement is Validation) validation.add(requirement)
+        } catch (e: Exception) {
+            Log.e(
+                FormField::class.java.name,
+                "Requirement not found, please check your validations array"
+            )
+        }
     }
 
 }

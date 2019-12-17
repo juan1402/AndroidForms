@@ -3,14 +3,18 @@ package com.hurtado.forms.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.textfield.TextInputLayout
+import androidx.core.view.children
 import com.hurtado.forms.control.FieldAction
+import com.hurtado.forms.directives.FormResult
 import com.hurtado.forms.directives.ValidationControl
-import java.util.*
+import java.util.regex.Pattern
+import kotlin.reflect.KMutableProperty
 
 /**
+ *
  * Created by Juan Hurtado on 05-22-18
  *
  * This is a class container for all Form controls available on the screen
@@ -18,94 +22,123 @@ import java.util.*
  * @see com.hurtado.forms.control.FieldAction
  *
  */
-class FormGroup(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
+    ConstraintLayout(context, attrs) {
 
-    private val validationCallback: (Boolean) -> Boolean = { isValid ->
+    interface CompleteListener<T : FormResult> {
+        fun onFormComplete(result: T)
+    }
+
+    private var validationCallback: (
+        Boolean,
+        ValidationControl
+    ) -> Boolean = { isValid, control ->
+
+        mapUserInput(control)
         if (::submitButton.isInitialized)
             submitButton.isEnabled = isValid
 
         isValid
     }
 
-    private val disabledActions = ArrayList<ValidationControl>()
+    private val properties = ArrayList<KMutableProperty<*>>()
+
+    private lateinit var callback: CompleteListener<T>
     private val controls = ArrayList<ValidationControl>()
     private lateinit var submitButton: Button
+    private lateinit var result: T
+
+    private fun mapUserInput(control: ValidationControl) = properties.forEach { field ->
+        val controlId = resourceId(control.getView())?.split(":id/")?.get(1)
+        if (Pattern.compile(controlId).matcher(field.name).find()) {
+            field.setter.call(result, control.input())
+        }
+    }
+
+    /**
+     * Register result class mutable properties
+     * for a later id match attempt
+     *
+     * sets completion callback
+     * sets empty result class
+     */
+    fun setOnCompleteListener(
+        callback: CompleteListener<T>,
+        result: T
+    ) {
+        this.callback = callback
+        this.result = result
+
+        result::class.members.forEach { field ->
+            if (field is KMutableProperty) properties.add(field)
+        }
+    }
 
     /**
      * Add individual FormField controls to this form group
      * @see com.hurtado.forms.control.FieldAction
      * is a TextInputEditText validation wrapper
      */
-    override fun onViewAdded(view: View?) {
-        super.onViewAdded(view)
-
-        if (view is FormField) {
-            controls.add(FieldAction(view,
-                view.validation, validationCallback))
-        }
-
-        if (view is Button) {
-            view.isEnabled = false
-            submitButton = view
-        }
-
-    }
+    override fun onViewAdded(view: View?) = findFormElements(view)
 
 
     /**
-     * @param id layout id to find specific action and disable it's validations
-     * As a user you will be able to enable this actions later on with
-     * @see enableAllActions this is useful for dynamic forms
+     * Recursive function to find any view form elements
+     * Regardless  hierarchy level
      */
-    fun disableById(id: Int) {
-        controls.find { control ->
-            control.getLayoutId() == id
-        }?.let { safeItem ->
-            disabledActions.add(safeItem)
-            safeItem.setIsEnable(false)
+    private fun findFormElements(view: View?) {
+        matchFormElements(view)
+
+        if (
+            view is ViewGroup &&
+            view.childCount > 0
+        ) {
+            view.children.forEach { child ->
+                matchFormElements(child)
+                if (
+                    child is ViewGroup &&
+                    view.childCount > 0
+                ) findFormElements(child)
+            }
         }
     }
 
     /**
-     * Enable all disabled actions by
-     * @see disableById
+     * Match Form view elements and assign validations
+     * Searches for buttons and form fields
      */
-    fun enableAllActions() {
-        disabledActions.forEach { action ->
-            action.setIsEnable(true)
-        }
-        disabledActions.clear()
-    }
+    private fun matchFormElements(view: View?) =
+        view?.let {
+            if (it is FormField) {
+                controls.add(
+                    FieldAction(
+                        it,
+                        it.validation,
+                        validationCallback
+                    )
+                )
+            }
 
-    /**
-     * Adds a listener to each given control
-     * @see com.hurtado.forms.control.FieldAction
-     */
-    fun addControlErrorListener(
-        callback: (
-            layout: TextInputLayout?,
-            errors: String?
-        ) -> Unit
-    ) {
-        controls.forEach { safeControl ->
-            safeControl.setCallback(callback)
-        }
-    }
-
-    /**
-     * Check all form controls validity
-     * @return if all forms are meeting given directives
-     */
-    fun isValid(): Boolean {
-        controls.forEach { safeValidation ->
-            if (!safeValidation.isValid()) {
-                submitButton.isEnabled = false
-                return false
+            if (it is Button) {
+                it.isEnabled = false
+                submitButton = it
+                it.setOnClickListener {
+                    callback.onFormComplete(result)
+                }
             }
         }
 
-        submitButton.isEnabled = true
-        return true
+    /**
+     * @return package name in format package.name:id/resource-id
+     */
+    private fun resourceId(view: View?) =
+        if (view?.id == View.NO_ID) ":id/no-id"
+        else view?.resources?.getResourceName(view.id)
+
+    fun onDestroy() {
+        controls.onEach { it.clear() }
+        properties.clear()
+        controls.clear()
     }
 
 }
