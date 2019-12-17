@@ -47,4 +47,6 @@ open class FormField(context: Context, attrs: AttributeSet?) : TextInputLayout(c
         }
     }
 
+    fun clearValidations() = validation.clear()
+
 }

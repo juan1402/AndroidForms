@@ -18,30 +18,37 @@ interface ValidationControl {
     /**
      * Check if there is an error present on the current layout
      * Logic will depend on each control
+     *
      * @see TextInputLayout
      */
     fun isValid(): Boolean
 
     /**
-     * @see com.hurtado.forms.control.FieldAction
      * Gets id of child item Override this method
      * to retrieve child's id
+     *
+     * @see com.hurtado.forms.control.FieldAction
+     * @return TextInputLayout id
      */
     fun getId(): Int
 
     /**
+     * Get Form field TextInputLayout if exists
+     *
      * @see com.hurtado.forms.control.FieldAction
-     * @return edit text view id exists
+     * @return TextInputLayout
      */
     fun getView(): View?
 
     /**
-     * @return edit text input
+     * Gets TextInputLayout id
+     * @return id
      */
     fun input(): String
 
     /**
      * Clear all listeners and saved instances
+     * Call this method to avoid memory leaks
      */
     fun clear()
 

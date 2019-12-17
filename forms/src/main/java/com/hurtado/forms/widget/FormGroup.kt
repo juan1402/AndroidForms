@@ -19,7 +19,7 @@ import kotlin.reflect.KMutableProperty
  *
  * This is a class container for all Form controls available on the screen
  * Use this class for an easier management of collective controls
- * @see com.hurtado.forms.control.FieldAction
+ * @see FieldAction
  *
  */
 open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
@@ -31,10 +31,24 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
      */
     var isFormValid = false
 
+    /**
+     * Form complete listener
+     * Form result type object will be sent as parameter
+     *
+     * @see FormResult
+     */
     interface CompleteListener<T : FormResult> {
         fun onFormComplete(result: T)
     }
 
+    /**
+     * Internal callback
+     * Is executed each time a form field
+     * Input changes
+     *
+     * @see mapUserInput
+     * @see ValidationControl
+     */
     private var validationCallback: (
         Boolean,
         ValidationControl
@@ -56,6 +70,9 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
     private lateinit var result: T
 
     /**
+     * @param control validation control
+     * @see ValidationControl
+     *
      * Matches user input with a field
      * package.name:id/resource-id , resource id will be extracted
      * And matched against text input edit text inside your form field
@@ -68,6 +85,9 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
     }
 
     /**
+     * @param callback complete listener
+     * @param result Result empty type object
+     *
      * Register result class mutable properties
      * for a later id match attempt
      *
@@ -88,13 +108,16 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
 
     /**
      * Add individual FormField controls to this form group
-     * @see com.hurtado.forms.control.FieldAction
+     * @see FieldAction
+     *
      * is a TextInputEditText validation wrapper
      */
     override fun onViewAdded(view: View?) = findFormElements(view)
 
 
     /**
+     * @param view form attached view
+     *
      * Recursive function to find any view form elements
      * Regardless  hierarchy level
      */
@@ -116,6 +139,8 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
     }
 
     /**
+     * @param view form attached view
+     *
      * Match Form view elements and assign validations
      * Searches for buttons and form fields
      */
@@ -129,6 +154,7 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
                         validationCallback
                     )
                 )
+                it.clearValidations()
             }
 
             if (it is Button) {
@@ -141,6 +167,23 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
         }
 
     /**
+     * Forces form complete listener to trigger
+     * Use this method to trigger form information if a button
+     * is not preset inside our form group
+     *
+     * @see CompleteListener
+     * @return form result data may be incomplete at this point
+     */
+    fun forceComplete() {
+        if (::callback.isInitialized) {
+            callback.onFormComplete(result)
+        }
+    }
+
+    /**
+     * package.name:id/no-id will be returned if
+     * @param view has no valid id
+     *
      * @return package name in format package.name:id/resource-id
      */
     private fun resourceId(view: View?) =
