@@ -148,6 +148,9 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
         else view?.resources?.getResourceName(view.id)
 
     fun onDestroy() {
+        if (::submitButton.isInitialized)
+            submitButton.setOnClickListener(null)
+
         controls.onEach { it.clear() }
         properties.clear()
         controls.clear()
