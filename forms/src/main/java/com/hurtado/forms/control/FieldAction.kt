@@ -3,8 +3,8 @@ package com.hurtado.forms.control
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import com.google.android.material.textfield.TextInputLayout
 import com.hurtado.forms.directives.ValidationControl
+import com.hurtado.forms.widget.FormField
 
 /**
  * Created by Juan Hurtado on 05-21-18
@@ -17,14 +17,18 @@ import com.hurtado.forms.directives.ValidationControl
  *
  */
 open class FieldAction(
-    private var layout: TextInputLayout?,
-    private val validators: ArrayList<Validation>,
-    private var validationCallback: (Boolean, ValidationControl) -> Boolean
+    private var layout: FormField,
+    private var inputChangeCallback: (ValidationControl) -> Unit
 ) : ValidationControl {
 
+    private val fieldId = layout.editText?.id ?: -1
+    private val fieldValidations = layout.validation
+    private var isFieldValid = false
+
     init {
-        layout?.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> isValid() }
-        layout?.editText?.addTextChangedListener(object : TextWatcher {
+        layout.editText?.onFocusChangeListener =
+            View.OnFocusChangeListener { _, _ -> assertFieldValidity() }
+        layout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(
@@ -37,61 +41,48 @@ open class FieldAction(
                 s: CharSequence?, start: Int,
                 before: Int, count: Int
             ) {
-                isValid()
+                assertFieldValidity()
             }
         }
         )
     }
 
-    private lateinit var errorCallback: (
-        layout: TextInputLayout?,
-        errors: String?
-    ) -> Unit
-
-    override fun onCreateFormError(value: String): String {
-        val error = String()
-
-        validators.forEach { validators ->
-            validators.onValidate(
-                layout?.context,
-                value
-            )?.let { error ->
-                return error
+    override fun onCreateFormError(value: String) =
+        String().apply {
+            fieldValidations.forEach { validators ->
+                validators.onValidate(
+                    layout.context,
+                    value
+                )?.let { error ->
+                    return error
+                }
             }
+            return this
         }
 
-        return error
-    }
-
-    override fun isValid(): Boolean {
+    fun assertFieldValidity() {
         val formError = onCreateFormError(
-            layout?.editText
-                ?.text.toString()
+            layout.editText?.text.toString()
         )
 
-        val isFormValid = formError.isEmpty()
+        isFieldValid = formError.isEmpty()
+        if (!isFieldValid) layout.error = formError
+        else layout.error = null
 
-        if (!isFormValid) {
-            layout?.error = formError
-
-            if (::errorCallback.isInitialized)
-                errorCallback.invoke(layout, formError)
-        } else {
-            layout?.error = null
-        }
-
-        return validationCallback.invoke(isFormValid, this)
+        return inputChangeCallback.invoke(this)
     }
 
-    override fun getId() = layout?.editText?.id ?: -1
+    override fun input() = layout.editText?.text.toString()
 
-    override fun getView() = layout?.editText
+    override fun getView() = layout.editText
 
-    override fun input() = layout?.editText?.text.toString()
+    override fun isValid() = isFieldValid
+
+    override fun getId() = fieldId
 
     override fun clear() {
-        validators.clear()
-        layout = null
+        fieldValidations.clear()
+        layout.clearValidations()
     }
 
 }

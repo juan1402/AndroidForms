@@ -26,6 +26,6 @@ class MainActivity : AppCompatActivity(), FormGroup.CompleteListener<SampleForm>
     }
 
     override fun onFormComplete(result: SampleForm) {
-        Log.d("LOL", "COMPLETE")
+        Log.d("RESULT", result.toString())
     }
 }

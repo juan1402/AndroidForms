@@ -49,17 +49,11 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
      * @see mapUserInput
      * @see ValidationControl
      */
-    private var validationCallback: (
-        Boolean,
+    private var inputChangeCallback: (
         ValidationControl
-    ) -> Boolean = { isValid, control ->
-
+    ) -> Unit = { control ->
         mapUserInput(control)
-        if (::submitButton.isInitialized)
-            submitButton.isEnabled = isValid
-        isFormValid = isValid
-
-        isValid
+        assertFormValidity()
     }
 
     private val properties = ArrayList<KMutableProperty<*>>()
@@ -123,11 +117,7 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
      */
     private fun findFormElements(view: View?) {
         matchFormElements(view)
-
-        if (
-            view is ViewGroup &&
-            view.childCount > 0
-        ) {
+        if (view is ViewGroup) {
             view.children.forEach { child ->
                 matchFormElements(child)
                 if (
@@ -138,33 +128,43 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
         }
     }
 
+    private fun assertFormValidity() {
+        isFormValid = controls.find { !it.isValid() } == null
+        if (::submitButton.isInitialized)
+            submitButton.isEnabled = isFormValid
+
+    }
+
     /**
      * @param view form attached view
      *
      * Match Form view elements and assign validations
      * Searches for buttons and form fields
      */
-    private fun matchFormElements(view: View?) =
-        view?.let {
-            if (it is FormField) {
-                controls.add(
-                    FieldAction(
-                        it,
-                        it.validation,
-                        validationCallback
-                    )
-                )
-                it.clearValidations()
-            }
+    private fun matchFormElements(view: View?) = view?.apply {
+        if (this is Button && !::submitButton.isInitialized) {
+            this.isEnabled = false
+            submitButton = this
 
-            if (it is Button) {
-                it.isEnabled = false
-                submitButton = it
-                it.setOnClickListener {
-                    callback.onFormComplete(result)
-                }
+            this.setOnClickListener {
+                callback.onFormComplete(result)
             }
         }
+
+        if (this is FormField)
+            if (controls.find { it.getId() == this.editText?.id } == null)
+                controls.add(FieldAction(this, inputChangeCallback))
+    }
+
+    /**
+     * package.name:id/no-id will be returned if
+     * @param view has no valid id
+     *
+     * @return package name in format package.name:id/resource-id
+     */
+    private fun resourceId(view: View?) =
+        if (view?.id == View.NO_ID) ":id/no-id"
+        else view?.resources?.getResourceName(view.id)
 
     /**
      * Forces form complete listener to trigger
@@ -179,16 +179,6 @@ open class FormGroup<T : FormResult>(context: Context, attrs: AttributeSet?) :
             callback.onFormComplete(result)
         }
     }
-
-    /**
-     * package.name:id/no-id will be returned if
-     * @param view has no valid id
-     *
-     * @return package name in format package.name:id/resource-id
-     */
-    private fun resourceId(view: View?) =
-        if (view?.id == View.NO_ID) ":id/no-id"
-        else view?.resources?.getResourceName(view.id)
 
     fun onDestroy() {
         if (::submitButton.isInitialized)
