@@ -9,7 +9,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 22
+        minSdkVersion 14
         targetSdkVersion 29
         versionCode 2
         versionName "2.0.0"
@@ -25,144 +25,16 @@ android {
     }
 }
 
-// library publish config stuff ======
-
-ext {
-
-    bintrayRepo = 'AndroidForms'
-    bintrayName = 'AndroidForms'
-
-    publishedGroupId = 'com.hurtado.forms'
-    libraryName = 'AndroidForms'
-    artifact = 'AndroidForms'
-
-    libraryDescription = 'Simple Android Forms'
-
-    siteUrl = 'https://github.com/juan1402/AndroidForms'
-    gitUrl = 'https://github.com/juan1402/AndroidForms.git'
-
-    libraryVersion = '1.2.4'
-
-    developerId = 'juan1402'
-    developerName = 'Juan Hurtado'
-    developerEmail = 'juan1402.91@gmail.com'
-
-    licenseName = 'The MIT License (MIT)'
-    licenseUrl = 'https://opensource.org/licenses/MIT'
-    allLicenses = ["MIT"]
-
-}
-
-group = publishedGroupId
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                groupId publishedGroupId
-                artifactId artifact
-
-                // Add your description here
-                name libraryName
-                description libraryDescription
-                url siteUrl
-
-                // Set your license
-                licenses {
-                    license {
-                        name licenseName
-                        url licenseUrl
-                    }
-                }
-                developers {
-                    developer {
-                        id developerId
-                        name developerName
-                        email developerEmail
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-
-                }
-            }
-        }
-    }
-}
-
-version = libraryVersion
-
-if (project.hasProperty("android")) { // Android libraries
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-    }
-
-    task(overwrite: true) {
-        javadoc(type: Javadoc) {
-            source = android.sourceSets.main.java.srcDirs
-            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-        }
-    }
-} else { // Java libraries
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = 'lol'
-    key = 'lol'
-    configurations = ['archives']
-
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        publish = true
-        publicDownloadNumbers = true
-        version {
-            desc = libraryDescription
-            gpg {
-                sign = false
-            }
-        }
-    }
-}
-
-// ======
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Material
-    api "com.google.android.material:material:1.2.0-alpha02"
+    implementation "com.google.android.material:material:1.2.0-alpha03"
 
     // Android X stuff
-    api 'androidx.constraintlayout:constraintlayout:1.1.3'
-    api 'androidx.appcompat:appcompat:1.1.0'
-    api 'androidx.core:core-ktx:1.1.0'
-    api 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.1.0'
 
     // Tests
     testImplementation 'junit:junit:4.12'
@@ -171,7 +43,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.61"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.61"
+    api "org.jetbrains.kotlin:kotlin-reflect:1.3.61"
 }
 
 repositories {

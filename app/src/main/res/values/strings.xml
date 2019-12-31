@@ -5,12 +5,29 @@
     <string name="custom_error">This is my custom error!!</string>
     <string name="submit_form">Submit Form</string>
 
-    <array name="sample_field_requirements">
+    <array name="sample_input_requirements">
         <item>com.hurtado.forms.validations.RequiredValidation</item>
         <item>com.hurtado.validation.validations.CustomMinCharValidation</item>
         <item>com.hurtado.validation.validations.CustomValidation</item>
         <item>com.hurtado.forms.validations.MaxCharValidation</item>
         <item>com.hurtado.forms.validations.SymbolsValidation</item>
     </array>
+
+    <array name="sample_switch_requirements">
+        <item>com.hurtado.forms.validations.AcceptanceValidation</item>
+    </array>
+
+    <array name="sample_int_requirements">
+        <item>com.hurtado.forms.validations.MinValueValidation</item>
+    </array>
+
+    <array name="sample_calendar_requirements">
+        <item>com.hurtado.forms.validations.FutureDateValidation</item>
+    </array>
+
+    <array name="sample_time_requirements">
+        <item>com.hurtado.forms.validations.CloseValidation</item>
+    </array>
+
 
 </resources>

@@ -2,18 +2,21 @@ package com.hurtado.forms.directives
 
 import android.view.View
 import com.google.android.material.textfield.TextInputLayout
+import com.hurtado.forms.widget.base.FormField
 
 /**
  * Created by Juan Hurtado on 05-23-18
- * Abstract control over custom error enabled objects
+ *
+ * Extend this class over your custom class controller
+ *
  */
-interface ValidationControl {
+interface FormController<InputType, Child : View> {
 
     /**
      * Within this function we will determine if our validation
      * expectations are fulfilled, you can create your custom validations
      */
-    fun onCreateFormError(value: String): String
+    fun onCreateFormError(value: InputType): String
 
     /**
      * Check if there is an error present on the current layout
@@ -24,32 +27,38 @@ interface ValidationControl {
     fun isValid(): Boolean
 
     /**
-     * Gets id of child item Override this method
-     * to retrieve child's id
-     *
-     * @see com.hurtado.forms.control.FieldAction
-     * @return TextInputLayout id
+     * Get Form field TextInputLayout if exists
+     * @return TextInputLayout
      */
-    fun getId(): Int
+    fun view(): FormField<InputType, Child>
 
     /**
      * Get Form field TextInputLayout if exists
-     *
-     * @see com.hurtado.forms.control.FieldAction
      * @return TextInputLayout
      */
-    fun getView(): View?
+    fun child(): Child?
 
     /**
      * Gets TextInputLayout id
      * @return id
      */
-    fun input(): String
+    fun input(): InputType
+
+    /**
+     * Controller creation callback
+     */
+    fun onCreate()
 
     /**
      * Clear all listeners and saved instances
      * Call this method to avoid memory leaks
      */
     fun clear()
+
+    /**
+     * Get controller id to avoid
+     * Controller duplication on FormGroup
+     */
+    fun controllerId(): Int
 
 }

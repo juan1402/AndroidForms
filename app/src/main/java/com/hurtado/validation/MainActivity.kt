@@ -3,7 +3,7 @@ package com.hurtado.validation
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.hurtado.forms.widget.FormGroup
+import com.hurtado.forms.widget.base.FormGroup
 
 class MainActivity : AppCompatActivity(), FormGroup.CompleteListener<SampleForm> {
 
@@ -18,8 +18,6 @@ class MainActivity : AppCompatActivity(), FormGroup.CompleteListener<SampleForm>
             this,
             SampleForm()
         )
-
-        sampleForm.forceComplete()
     }
 
     override fun onDestroy() {

@@ -3,10 +3,14 @@
 
     <!-- Validations Errors -->
 
+    <string name="min_value_error">Value must lower than 3</string>
+    <string name="acceptance_validation_error">Acceptance is mandatory</string>
     <string name="symbols_validation_error">Should only contain letters and numbers</string>
     <string name="max_validation_error">Should contain no more than %d characters</string>
     <string name="min_validation_error">Should contain at least %d characters</string>
     <string name="email_validation_error">Please enter a valid email address</string>
     <string name="required_validation_error">This field is required</string>
+    <string name="future_validation_error">Your date must be in the future</string>
+    <string name="close_validation_error">time must be between 3 and 9 pm</string>
 
 </resources>
