@@ -6,7 +6,7 @@
 **First import this dependencies to your build.gradle app level**
 ```` groovy
 //Android Forms implementation
-implementation 'com.hurtado.forms:AndroidForms:1.3.2'
+implementation 'com.hurtado.forms:AndroidForms:1.3.5'
 ````
 
 # Form Group 
