@@ -38,7 +38,7 @@ class CalendarController(
         val datePicker = CalendarView(view().context)
         datePicker.date = datePicker.date
 
-        datePicker.setOnDateChangeListener { view, year, month, dayOfMonth ->
+        datePicker.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             calendar.set(Calendar.MONTH, month)

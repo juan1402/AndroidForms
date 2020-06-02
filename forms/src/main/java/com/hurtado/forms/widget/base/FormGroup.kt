@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.hurtado.forms.directives.Field
 import com.hurtado.forms.directives.FormButton
 import com.hurtado.forms.directives.FormController
 import com.hurtado.forms.directives.FormResult
 import java.util.regex.Pattern
+import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
+import kotlin.reflect.full.createInstance
 
 /**
  *
@@ -23,13 +27,13 @@ import kotlin.reflect.KMutableProperty
  *
  */
 open class FormGroup<TypeResult : FormResult>(context: Context, attrs: AttributeSet?) :
-    ConstraintLayout(context, attrs) {
+        ConstraintLayout(context, attrs) {
 
     /**
      * Use this public variable to request form
      * Validity at any moment
      */
-    var isFormValid = false
+    private var isFormValid = false
 
     /**
      * Form complete listener
@@ -37,9 +41,7 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
      *
      * @see FormResult
      */
-    interface CompleteListener<TypeResult : FormResult> {
-        fun onFormComplete(result: TypeResult)
-    }
+    private val data = MutableLiveData<TypeResult>()
 
     /**
      * Internal callback
@@ -49,17 +51,15 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
      * @see mapUserInput
      * @see FormController
      */
-    private var inputChangeCallback: (
-        FormController<*, *>
+    protected var inputChangeCallback: (
+            FormController<*, *>
     ) -> Unit = { control ->
         mapUserInput(control)
         assertFormValidity()
     }
 
     private val properties = ArrayList<KMutableProperty<*>>()
-
-    private lateinit var callback: CompleteListener<TypeResult>
-    private val controllers = ArrayList<FormController<*, *>>()
+    protected val controllers = ArrayList<FormController<*, *>>()
     private lateinit var submitButton: Button
     private lateinit var result: TypeResult
 
@@ -79,25 +79,18 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
     }
 
     /**
-     * @param callback complete listener
-     * @param result Result empty type object
-     *
      * Register result class mutable properties
      * for a later id match attempt
      *
      * sets completion callback
      * sets empty result class
      */
-    fun setOnCompleteListener(
-        callback: CompleteListener<TypeResult>,
-        result: TypeResult
-    ) {
-        this.callback = callback
-        this.result = result
-
+    fun of(clazz : KClass<TypeResult>): LiveData<TypeResult> {
+        result = clazz.createInstance()
         result::class.members.forEach { field ->
             if (field is KMutableProperty) properties.add(field)
         }
+        return data
     }
 
     /**
@@ -126,14 +119,13 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
      * Match Form view elements and assign validations
      * Searches for buttons and form fields
      */
-    private fun matchFormElements(view: View?) = view?.apply {
+    protected fun matchFormElements(view: View?) = view?.apply {
         if (this is FormButton && !::submitButton.isInitialized) {
             submitButton = this as Button
             submitButton.isEnabled = false
 
             this.setOnClickListener {
-                if (::callback.isInitialized)
-                    callback.onFormComplete(result)
+                data.value = result
             }
         }
 
@@ -141,9 +133,9 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
             val controller = this.controller(inputChangeCallback)
 
             if (controllers.find {
-                    it.controllerId() ==
-                            controller.controllerId()
-                } == null) {
+                        it.controllerId() ==
+                                controller.controllerId()
+                    } == null) {
                 controllers.add(controller)
             }
 
@@ -157,21 +149,19 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
      * @return package name in format package.name:id/resource-id
      */
     private fun resourceId(view: View?) =
-        if (view?.id == View.NO_ID) NO_ID
-        else view?.resources?.getResourceName(view.id)
+            if (view?.id == View.NO_ID) NO_ID
+            else view?.resources?.getResourceName(view.id)
 
     /**
-     * Forces form complete listener to trigger
-     * Use this method to trigger form information if a button
-     * is not preset inside our form group
-     *
-     * @see CompleteListener
-     * @return form result data may be incomplete at this point
+     * If form is valid a live data will be triggered
+     * @see data
+     * @return true if form is valid and live data
+     * was triggered false otherwise
      */
-    fun forceComplete() {
-        if (::callback.isInitialized) {
-            callback.onFormComplete(result)
-        }
+    fun isFormComplete(): Boolean {
+        val isValid = isFormValid
+        if (isValid) data.value = result
+        return isValid
     }
 
     override fun onViewAdded(view: View?) {
@@ -179,10 +169,10 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
         if (view is ViewGroup) recursiveChildLoop(view)
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        controllers.forEach { it.onCreate() }
-    }
+    /**
+     * Must be called to initialized controller validations
+     */
+    fun requireValidation() = controllers.forEach { it.onCreate() }
 
     fun onDestroy() {
         if (::submitButton.isInitialized)
@@ -197,5 +187,4 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
         private const val DELIMITERS = ":id/"
         private const val NO_ID = ":id/no-id"
     }
-
 }

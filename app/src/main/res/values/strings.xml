@@ -4,6 +4,10 @@
     <string name="sample_validation">Sample Validation</string>
     <string name="custom_error">This is my custom error!!</string>
     <string name="submit_form">Submit Form</string>
+    <string name="forms">Forms</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="birth_date_hint">Birth date</string>
 
     <array name="sample_input_requirements">
         <item>com.hurtado.forms.validations.RequiredValidation</item>

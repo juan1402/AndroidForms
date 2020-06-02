@@ -1,122 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hurtado.forms.widget.base.FormGroup xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/form_group"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.hurtado.forms.widget.InputCompatField
-        android:id="@+id/name_layout"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.hurtado.validation.activity.LoginViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/switchCompatField2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:validations="@array/sample_input_requirements">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Input"
-            tools:ignore="HardcodedText" />
-    </com.hurtado.forms.widget.InputCompatField>
-
-    <com.hurtado.forms.widget.SwitchCompatField
-        android:id="@+id/switchCompatField2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/checkBoxCompatField2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toBottomOf="@+id/name_layout"
-        app:validations="@array/sample_switch_requirements">
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchChild"
+        <com.hurtado.forms.widget.base.FormGroup
+            android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Switch"
-            tools:ignore="HardcodedText" />
-    </com.hurtado.forms.widget.SwitchCompatField>
+            android:padding="24dp">
 
-    <com.hurtado.forms.widget.CheckBoxCompatField
-        android:id="@+id/checkBoxCompatField2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/calendarCompatField2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toBottomOf="@+id/switchCompatField2"
-        app:validations="@array/sample_switch_requirements">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/title_margin_top"
+                android:gravity="center"
+                android:text="@string/forms"
+                android:textSize="@dimen/title_size"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Check Box"
-            tools:ignore="HardcodedText" />
-    </com.hurtado.forms.widget.CheckBoxCompatField>
+            <com.hurtado.forms.widget.CalendarCompatField
+                android:id="@+id/ff_calendar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                app:layout_constraintBottom_toTopOf="@+id/ff_username"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:validate="@{viewModel.calendarValidations}">
 
-    <com.hurtado.forms.widget.CalendarCompatField
-        android:id="@+id/calendarCompatField2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/timeCompatField2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxCompatField2"
-        app:validations="@array/sample_calendar_requirements">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:inputType="none"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:id="@+id/birthDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/birth_date_hint" />
+            </com.hurtado.forms.widget.CalendarCompatField>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_date"
-            android:drawablePadding="8dp"
-            android:focusable="false"
-            android:hint="Pick Date"
-            tools:ignore="HardcodedText,RtlCompat" />
-    </com.hurtado.forms.widget.CalendarCompatField>
+            <com.hurtado.forms.widget.InputCompatField
+                android:id="@+id/ff_username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:validate="@{viewModel.usernameValidations}">
 
-    <com.hurtado.forms.widget.TimeCompatField
-        android:id="@+id/timeCompatField2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toBottomOf="@+id/calendarCompatField2"
-        app:validations="@array/sample_time_requirements">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/username_hint" />
+            </com.hurtado.forms.widget.InputCompatField>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_time"
-            android:drawablePadding="8dp"
-            android:focusable="false"
-            android:hint="Pick Time"
-            tools:ignore="HardcodedText,RtlCompat" />
-    </com.hurtado.forms.widget.TimeCompatField>
+            <com.hurtado.forms.widget.InputCompatField
+                android:id="@+id/ff_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/password_margin_top"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ff_username"
+                app:validate="@{viewModel.passwordValidations}">
 
-    <com.hurtado.forms.widget.base.FormButton
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="@string/submit_form"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeCompatField2"
-        tools:targetApi="lollipop" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:maxLines="1"
+                    android:imeOptions="actionDone"
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password_hint" />
+            </com.hurtado.forms.widget.InputCompatField>
 
-</com.hurtado.forms.widget.base.FormGroup>
+            <com.hurtado.forms.widget.base.FormButton
+                android:id="@+id/button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/submit_form"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:targetApi="lollipop" />
+
+        </com.hurtado.forms.widget.base.FormGroup>
+    </androidx.core.widget.NestedScrollView>
+</layout>
