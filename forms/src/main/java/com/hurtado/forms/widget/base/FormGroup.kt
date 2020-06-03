@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.hurtado.forms.directives.Field
 import com.hurtado.forms.directives.FormButton
 import com.hurtado.forms.directives.FormController
@@ -27,7 +27,7 @@ import kotlin.reflect.full.createInstance
  *
  */
 open class FormGroup<TypeResult : FormResult>(context: Context, attrs: AttributeSet?) :
-        ConstraintLayout(context, attrs) {
+        ConstraintLayout(context, attrs), LifecycleObserver {
 
     /**
      * Use this public variable to request form
@@ -85,12 +85,19 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
      * sets completion callback
      * sets empty result class
      */
-    fun of(clazz : KClass<TypeResult>): LiveData<TypeResult> {
+    fun of(clazz : KClass<TypeResult>): FormGroup<TypeResult> {
         result = clazz.createInstance()
         result::class.members.forEach { field ->
             if (field is KMutableProperty) properties.add(field)
         }
-        return data
+        return this@FormGroup
+    }
+
+    /**
+     * Observes l
+     */
+    fun observe(owner: LifecycleOwner, observer: Observer<in TypeResult>) {
+        data.observe(owner, observer); owner.lifecycle.addObserver(this)
     }
 
     /**
@@ -174,6 +181,7 @@ open class FormGroup<TypeResult : FormResult>(context: Context, attrs: Attribute
      */
     fun requireValidation() = controllers.forEach { it.onCreate() }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         if (::submitButton.isInitialized)
             submitButton.setOnClickListener(null)

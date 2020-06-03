@@ -38,11 +38,6 @@ class LoginActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG).show()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.loginForm.onDestroy()
-    }
-
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd"
     }
