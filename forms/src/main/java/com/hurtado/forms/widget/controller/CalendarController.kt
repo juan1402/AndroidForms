@@ -3,17 +3,16 @@ package com.hurtado.forms.widget.controller
 import android.app.AlertDialog
 import android.widget.CalendarView
 import com.google.android.material.textfield.TextInputEditText
-import com.hurtado.forms.R
 import com.hurtado.forms.control.Controller
 import com.hurtado.forms.directives.Field
-import com.hurtado.forms.directives.FormController
+import com.hurtado.forms.directives.ChangeListener
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarController(
     action: Field<Date, TextInputEditText>,
-    callback: (FormController<Date, TextInputEditText>) -> Unit
-) : Controller<Date, TextInputEditText>(action, callback) {
+    listener: ChangeListener
+) : Controller<Date, TextInputEditText>(action, listener) {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private var selectedDate = Date()

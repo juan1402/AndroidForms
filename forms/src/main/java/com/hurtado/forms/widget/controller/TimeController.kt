@@ -5,13 +5,13 @@ import android.app.TimePickerDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.hurtado.forms.control.Controller
 import com.hurtado.forms.directives.Field
-import com.hurtado.forms.directives.FormController
+import com.hurtado.forms.directives.ChangeListener
 import java.util.*
 
 class TimeController(
-    action: Field<Date, TextInputEditText>,
-    callback: (FormController<Date, TextInputEditText>) -> Unit
-) : Controller<Date, TextInputEditText>(action, callback) {
+        action: Field<Date, TextInputEditText>,
+        listener: ChangeListener
+) : Controller<Date, TextInputEditText>(action, listener) {
 
     private var selectedDate = Date()
 
@@ -30,21 +30,21 @@ class TimeController(
     private fun buildAppCompatDialog(onDateSelected: (date: Date) -> Unit) {
         val currentDate = Date()
         TimePickerDialog(
-            view().context,
-            TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                val calendar = Calendar.getInstance()
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
+                view().context,
+                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                    val calendar = Calendar.getInstance()
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    calendar.set(Calendar.MINUTE, minute)
 
-                val time = if (minute < 10) {
-                    "$hourOfDay:0$minute"
-                } else {
-                    "$hourOfDay:$minute"
-                }
+                    val time = if (minute < 10) {
+                        "$hourOfDay:0$minute"
+                    } else {
+                        "$hourOfDay:$minute"
+                    }
 
-                action.child().setText(time)
-                onDateSelected.invoke(calendar.time)
-            }, currentDate.hours, currentDate.minutes, false
+                    action.child().setText(time)
+                    onDateSelected.invoke(calendar.time)
+                }, currentDate.hours, currentDate.minutes, false
         ).show()
     }
 

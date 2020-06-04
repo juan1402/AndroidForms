@@ -24,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         // observer form
-        binding.loginForm.of(LoginFormResult::class)
+        binding.loginForm.of<LoginFormResult>()
                 .observe(this, loginResultObserver())
         // make validations mandatory
         binding.loginForm.requireValidation()

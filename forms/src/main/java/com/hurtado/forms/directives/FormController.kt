@@ -10,13 +10,13 @@ import com.hurtado.forms.widget.base.FormField
  * Extend this class over your custom class controller
  *
  */
-interface FormController<InputType, Child : View> {
+interface FormController<T, K : View> {
 
     /**
      * Within this function we will determine if our validation
      * expectations are fulfilled, you can create your custom validations
      */
-    fun onCreateFormError(value: InputType): String
+    fun onCreateFormError(value: T): String
 
     /**
      * Check if there is an error present on the current layout
@@ -30,19 +30,19 @@ interface FormController<InputType, Child : View> {
      * Get Form field TextInputLayout if exists
      * @return TextInputLayout
      */
-    fun view(): FormField<InputType, Child>
+    fun view(): FormField<T, K>
 
     /**
      * Get Form field TextInputLayout if exists
      * @return TextInputLayout
      */
-    fun child(): Child?
+    fun child(): K?
 
     /**
      * Gets TextInputLayout id
      * @return id
      */
-    fun input(): InputType
+    fun input(): T
 
     /**
      * Controller creation callback

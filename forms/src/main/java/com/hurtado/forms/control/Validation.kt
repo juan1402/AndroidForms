@@ -13,9 +13,9 @@ import androidx.annotation.StringRes
  * @see com.hurtado.forms.control.Validation
  *
  */
-open class Validation<InputType>(@StringRes private val error: Int) {
+open class Validation<T>(@StringRes private val error: Int) {
 
-    open fun onValidate(context: Context?, value: InputType) = formatError(context, error)
+    open fun onValidate(context: Context?, value: T) = formatError(context, error)
 
     open fun formatError(context: Context?, @StringRes error: Int) = context?.getString(error)
 }

@@ -4,19 +4,19 @@ import android.view.View
 import com.hurtado.forms.control.Validation
 import com.hurtado.forms.widget.base.FormField
 
-interface Field<InputType, Child: View> {
+interface Field<T, K: View> {
 
     /**
      * Form Field view for Validation criteria
      * @return View
      */
-    fun view(): FormField<InputType, Child>
+    fun view(): FormField<T, K>
 
     /**
      * @see FormField
      * @return form field child
      */
-    fun child(): Child
+    fun child(): K
 
     /**
      * Clear inherited validations
@@ -27,11 +27,11 @@ interface Field<InputType, Child: View> {
      * Get View Validations
      * @see Validation
      */
-    fun validations(): ArrayList<Validation<InputType>>
+    fun validations(): ArrayList<Validation<T>>
 
     /**
      * Get validation control implementation
      * Which will be used against user logic
      */
-    fun controller(host: (FormController<InputType, Child>) -> Unit): FormController<InputType, Child>
+    fun controller(l: ChangeListener): FormController<T, K>
 }

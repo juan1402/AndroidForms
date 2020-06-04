@@ -3,12 +3,12 @@ package com.hurtado.forms.widget.controller
 import androidx.appcompat.widget.AppCompatCheckBox
 import com.hurtado.forms.control.Controller
 import com.hurtado.forms.directives.Field
-import com.hurtado.forms.directives.FormController
+import com.hurtado.forms.directives.ChangeListener
 
 class CheckBoxController(
     action: Field<Boolean, AppCompatCheckBox>,
-    callback: (FormController<Boolean, AppCompatCheckBox>) -> Unit
-) : Controller<Boolean, AppCompatCheckBox>(action, callback) {
+    listener: ChangeListener
+) : Controller<Boolean, AppCompatCheckBox>(action, listener) {
 
     override fun onCreate() {
         assertFieldValidity(child().isChecked)

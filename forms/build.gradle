@@ -8,7 +8,7 @@ publish {
 
     def groupProjectID = 'com.hurtado.forms'
     def artifactProjectID = 'AndroidForms'
-    def publishVersionID = '1.3.6'
+    def publishVersionID = '1.3.7.1'
 
     userOrg = 'jhurtado'
     repoName = 'AndroidForms'

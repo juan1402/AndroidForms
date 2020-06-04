@@ -10,20 +10,19 @@ import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
-abstract class FormField<InputType, Child : View>(
-        context: Context,
+abstract class FormField<T, K : View>(context: Context,
         attrs: AttributeSet,
-        private val clazz: KClass<Child>
-) : TextInputLayout(context, attrs), Field<InputType, Child> {
+        private val clazz: KClass<K>
+) : TextInputLayout(context, attrs), Field<T, K> {
 
-    private var validation = ArrayList<Validation<InputType>>()
-    private var child = WeakReference<Child>(null)
+    private var validation = ArrayList<Validation<T>>()
+    private var child = WeakReference<K>(null)
 
-    fun validate(validations: List<Validation<InputType>>) {
+    fun validate(validations: List<Validation<T>>) {
         this.validation.addAll(validations)
     }
 
-    fun validate(validation: Validation<InputType>) {
+    fun validate(validation: Validation<T>) {
         this.validation.add(validation)
     }
 
@@ -38,9 +37,7 @@ abstract class FormField<InputType, Child : View>(
 
     override fun onViewAdded(child: View?) {
         super.onViewAdded(child)
-        child?.let {
-            if (clazz == it::class)
-                this.child = WeakReference(it as Child)
-        }
+        if (child != null && clazz == child::class)
+            this.child = WeakReference(child as K)
     }
 }
